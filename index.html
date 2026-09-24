@@ -1,0 +1,3096 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Wireless Security Demonstration</title>
+
+    <style>
+
+        /* =====================================
+           GLOBAL SETTINGS
+        ===================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #050a0f;
+            color: #e8f0f4;
+            line-height: 1.6;
+        }
+
+        :root {
+            --bg: #050a0f;
+            --card: #0b151c;
+            --card2: #0f1c24;
+            --green: #00ff9d;
+            --blue: #00c8ff;
+            --text: #e8f0f4;
+            --muted: #8ca0aa;
+            --danger: #ff4d67;
+            --warning: #ffb020;
+            --border: rgba(255, 255, 255, 0.09);
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+
+        /* =====================================
+           NAVBAR
+        ===================================== */
+
+        .navbar {
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(5, 10, 15, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            font-size: 26px;
+        }
+
+        .green {
+            color: var(--green);
+        }
+
+        .navbar nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        .navbar nav a {
+            color: #9eafb7;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+
+        .navbar nav a:hover {
+            color: var(--green);
+        }
+
+        .nav-button {
+            background: transparent;
+            color: var(--green);
+            border: 1px solid var(--green);
+            padding: 10px 18px;
+            border-radius: 7px;
+        }
+
+        .nav-button:hover {
+            background: var(--green);
+            color: #00140d;
+        }
+
+
+        /* =====================================
+           HERO SECTION
+        ===================================== */
+
+        .hero {
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 9%;
+            gap: 40px;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(
+                    circle at 75% 50%,
+                    rgba(0, 255, 157, 0.10),
+                    transparent 32%
+                );
+        }
+
+        .hero-content {
+            width: 55%;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            background: rgba(0, 255, 157, 0.05);
+            color: var(--green);
+            padding: 8px 14px;
+            border-radius: 50px;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--green);
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 6vw, 78px);
+            line-height: 1.05;
+            letter-spacing: -3px;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 span {
+            display: block;
+            color: var(--green);
+        }
+
+        .hero p {
+            max-width: 650px;
+            color: var(--muted);
+            font-size: 16px;
+            margin-bottom: 35px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn {
+            border: none;
+            background: var(--green);
+            color: #00140d;
+            padding: 13px 22px;
+            border-radius: 7px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 255, 157, 0.3);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid var(--border);
+            padding: 13px 22px;
+            border-radius: 7px;
+        }
+
+        .secondary-btn:hover {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 45px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stats div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-stats strong {
+            color: var(--green);
+            font-size: 22px;
+        }
+
+        .hero-stats span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+
+        /* =====================================
+           NETWORK VISUALIZATION
+        ===================================== */
+
+        .network-visual {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .wifi-circle {
+            position: absolute;
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 50%;
+            animation: pulse 3s infinite;
+        }
+
+        .circle-one {
+            width: 160px;
+            height: 160px;
+        }
+
+        .circle-two {
+            width: 260px;
+            height: 260px;
+            animation-delay: 0.5s;
+        }
+
+        .circle-three {
+            width: 360px;
+            height: 360px;
+            animation-delay: 1s;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.2;
+                transform: scale(0.95);
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+        }
+
+        .router {
+            width: 130px;
+            height: 130px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #10222c, #071117);
+            border: 1px solid rgba(0, 255, 157, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 50px rgba(0, 255, 157, 0.1);
+            z-index: 2;
+        }
+
+        .router-icon {
+            font-size: 40px;
+        }
+
+        .router p {
+            font-size: 9px;
+            color: var(--green);
+            letter-spacing: 2px;
+        }
+
+        .device {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #0d1b23;
+            border: 1px solid var(--border);
+            font-size: 25px;
+            z-index: 3;
+        }
+
+        .device-one {
+            top: 20px;
+            left: 70px;
+        }
+
+        .device-two {
+            right: 20px;
+            top: 180px;
+        }
+
+        .device-three {
+            bottom: 30px;
+            left: 80px;
+        }
+
+
+        /* =====================================
+           GENERAL SECTIONS
+        ===================================== */
+
+        .section {
+            padding: 100px 8%;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .dark-section {
+            background: #071016;
+        }
+
+        .section-heading {
+            max-width: 750px;
+            margin: 0 auto 55px;
+            text-align: center;
+        }
+
+        .section-tag {
+            color: var(--green);
+            font-size: 11px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .section-heading h2 {
+            font-size: 42px;
+            line-height: 1.2;
+            margin: 12px 0;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+
+        /* =====================================
+           SECURITY CARDS
+        ===================================== */
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .security-card {
+            background: linear-gradient(145deg, #0c171e, #081118);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 14px;
+            transition: 0.3s;
+        }
+
+        .security-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 255, 157, 0.35);
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .security-card h3 {
+            margin-bottom: 10px;
+            font-size: 19px;
+        }
+
+        .security-card p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .card-label {
+            font-family: monospace;
+            color: var(--green);
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+
+
+        /* =====================================
+           WPA TABLE
+        ===================================== */
+
+        .protocol-table {
+            max-width: 1000px;
+            margin: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-header,
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr 2fr;
+            padding: 20px 25px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-header {
+            background: #0d1b22;
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .table-row {
+            border-top: 1px solid var(--border);
+            color: #c8d3d8;
+            font-size: 13px;
+        }
+
+        .highlight-row {
+            background: rgba(0, 255, 157, 0.05);
+        }
+
+        .good {
+            color: #2de38a;
+        }
+
+        .excellent {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .warning {
+            color: var(--warning);
+        }
+
+        .danger {
+            color: var(--danger);
+        }
+
+
+        /* =====================================
+           THREATS
+        ===================================== */
+
+        .threat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .threat-card {
+            padding: 30px;
+            background: #0a141b;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            transition: 0.3s;
+        }
+
+        .threat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 77, 103, 0.4);
+        }
+
+        .threat-number {
+            color: rgba(0, 255, 157, 0.25);
+            font-family: monospace;
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .threat-card h3 {
+            margin-bottom: 12px;
+        }
+
+        .threat-card p {
+            color: var(--muted);
+            font-size: 13px;
+            min-height: 85px;
+        }
+
+        .threat-level {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 700;
+            margin-top: 20px;
+        }
+
+        .medium {
+            color: var(--warning);
+            background: rgba(255, 176, 32, 0.08);
+        }
+
+        .high {
+            color: #ff704d;
+            background: rgba(255, 112, 77, 0.08);
+        }
+
+        .critical {
+            color: var(--danger);
+            background: rgba(255, 77, 103, 0.08);
+        }
+
+
+        /* =====================================
+           LAB
+        ===================================== */
+
+        .lab-section {
+            background: linear-gradient(180deg, #050a0f, #08141a);
+        }
+
+        .lab-container {
+            max-width: 1150px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .lab-card {
+            background: #0a141b;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px;
+        }
+
+        .lab-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .lab-card-header > div {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lab-icon {
+            font-size: 25px;
+        }
+
+        .lab-card h3 {
+            font-size: 17px;
+        }
+
+        .simulation {
+            color: var(--green);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            background: rgba(0, 255, 157, 0.05);
+            padding: 4px 8px;
+            font-size: 8px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .lab-description {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 25px;
+        }
+
+        .password-input {
+            display: flex;
+            gap: 8px;
+        }
+
+        .password-input input {
+            flex: 1;
+            min-width: 0;
+            background: #050a0f;
+            border: 1px solid var(--border);
+            padding: 13px;
+            color: white;
+            border-radius: 7px;
+            outline: none;
+        }
+
+        .password-input input:focus {
+            border-color: var(--green);
+        }
+
+        .password-input button {
+            background: #101e26;
+            border: 1px solid var(--border);
+            color: white;
+            width: 45px;
+            border-radius: 7px;
+        }
+
+        .strength-bar {
+            height: 7px;
+            background: #17242b;
+            margin: 18px 0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        #strengthProgress {
+            height: 100%;
+            width: 0%;
+            transition: 0.4s;
+            background: var(--green);
+        }
+
+        .strength-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        #strengthText {
+            color: var(--green);
+        }
+
+        .password-rules {
+            display: grid;
+            gap: 7px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+
+        /* =====================================
+           AUTHENTICATION DEMO
+        ===================================== */
+
+        .auth-system {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 35px 0;
+        }
+
+        .auth-device {
+            width: 85px;
+            height: 85px;
+            border: 1px solid var(--border);
+            background: #071117;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .auth-device span {
+            font-size: 7px;
+            color: var(--green);
+            margin-top: 5px;
+        }
+
+        .auth-line {
+            flex: 1;
+            border-top: 1px dashed var(--green);
+            text-align: center;
+        }
+
+        .auth-line span {
+            position: relative;
+            top: -12px;
+            font-size: 10px;
+            color: var(--green);
+            background: #0a141b;
+            padding: 0 5px;
+        }
+
+        .full-btn {
+            width: 100%;
+        }
+
+
+        /* =====================================
+           ENCRYPTION
+        ===================================== */
+
+        .encryption-box {
+            display: grid;
+            gap: 10px;
+        }
+
+        .encryption-box label {
+            color: var(--muted);
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .encryption-box input {
+            background: #050a0f;
+            border: 1px solid var(--border);
+            padding: 13px;
+            border-radius: 7px;
+            color: white;
+            outline: none;
+        }
+
+        .cipher-output {
+            min-height: 60px;
+            padding: 15px;
+            border: 1px dashed rgba(0, 255, 157, 0.3);
+            border-radius: 7px;
+            background: rgba(0, 255, 157, 0.03);
+            color: var(--green);
+            font-family: monospace;
+            font-size: 11px;
+            word-break: break-all;
+        }
+
+
+        /* =====================================
+           SCANNER
+        ===================================== */
+
+        .scan-results {
+            margin-top: 18px;
+            background: #050a0f;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 15px;
+            min-height: 100px;
+        }
+
+        .scan-placeholder {
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+            padding: 25px;
+        }
+
+        .scan-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 11px;
+        }
+
+        .scan-row:last-child {
+            border-bottom: none;
+        }
+
+
+        /* =====================================
+           SECURITY SCORE
+        ===================================== */
+
+        .score-section {
+            background: #071016;
+        }
+
+        .score-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .score-panel {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 50px;
+            align-items: center;
+            margin-top: 50px;
+            background: #0a141b;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 40px;
+        }
+
+        .score-circle {
+            width: 190px;
+            height: 190px;
+            border-radius: 50%;
+            border: 8px solid rgba(0, 255, 157, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: auto;
+        }
+
+        .score-circle span {
+            font-size: 55px;
+            color: var(--green);
+            font-weight: 800;
+        }
+
+        .score-circle small {
+            color: var(--muted);
+        }
+
+        .score-controls {
+            display: grid;
+            gap: 13px;
+        }
+
+        .score-controls label {
+            color: #bdcbd0;
+            font-size: 13px;
+        }
+
+        .score-controls input {
+            accent-color: var(--green);
+            margin-right: 10px;
+        }
+
+
+        /* =====================================
+           CHECKLIST
+        ===================================== */
+
+        .checklist {
+            max-width: 950px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .check-item {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            background: #0a141b;
+            border-radius: 10px;
+        }
+
+        .check-icon {
+            min-width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 255, 157, 0.1);
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .check-item h3 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .check-item p {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+
+        /* =====================================
+           FOOTER
+        ===================================== */
+
+        footer {
+            padding: 50px 8%;
+            border-top: 1px solid var(--border);
+            background: #03070a;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-content p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .copyright {
+            margin-top: 15px;
+            font-size: 10px !important;
+        }
+
+
+        /* =====================================
+           RESPONSIVE DESIGN
+        ===================================== */
+
+        @media (max-width: 1100px) {
+
+            .security-grid,
+            .threat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-content {
+                width: 100%;
+            }
+
+            .hero-buttons,
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .network-visual {
+                margin-top: 30px;
+            }
+
+        }
+
+
+        @media (max-width: 750px) {
+
+            .navbar nav {
+                display: none;
+            }
+
+            .nav-button {
+                display: none;
+            }
+
+            .hero {
+                padding: 70px 6%;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .network-visual {
+                transform: scale(0.8);
+            }
+
+            .security-grid,
+            .threat-grid,
+            .lab-container,
+            .checklist {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header,
+            .table-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .table-header span:nth-child(n+3),
+            .table-row span:nth-child(n+3) {
+                display: none;
+            }
+
+            .score-panel {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .hero h1 {
+                font-size: 40px;
+                letter-spacing: -2px;
+            }
+
+            .hero-stats {
+                gap: 20px;
+            }
+
+            .section {
+                padding: 75px 5%;
+            }
+
+            .section-heading h2 {
+                font-size: 32px;
+            }
+
+            .network-visual {
+                transform: scale(0.65);
+                margin-left: -60px;
+                margin-right: -60px;
+            }
+
+            .table-header,
+            .table-row {
+                padding: 15px;
+            }
+
+            .lab-card {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================
+         NAVBAR
+    ===================================== -->
+
+    <header class="navbar">
+
+        <div class="logo">
+
+            <span class="logo-icon">🛡️</span>
+
+            <span>
+                Wireless<span class="green">Secure</span>
+            </span>
+
+        </div>
+
+
+        <nav>
+
+            <a href="#home">Home</a>
+
+            <a href="#security">Security</a>
+
+            <a href="#threats">Threats</a>
+
+            <a href="#lab">Security Lab</a>
+
+            <a href="#checklist">Checklist</a>
+
+        </nav>
+
+
+        <button
+            class="nav-button"
+            onclick="scrollToLab()"
+        >
+
+            Open Lab
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================
+         HERO SECTION
+    ===================================== -->
+
+    <section class="hero" id="home">
+
+
+        <div class="hero-content">
+
+
+            <div class="badge">
+
+                <span class="status-dot"></span>
+
+                CYBERSECURITY EDUCATION PLATFORM
+
+            </div>
+
+
+            <h1>
+
+                Wireless Security
+
+                <span>Demonstration</span>
+
+            </h1>
+
+
+            <p>
+
+                Learn how wireless networks are protected,
+                how authentication works, and how common
+                security risks can be identified through
+                safe interactive simulations.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+
+                <button
+                    class="primary-btn"
+                    onclick="scrollToLab()"
+                >
+
+                    🧪 Start Security Lab
+
+                </button>
+
+
+                <button
+                    class="secondary-btn"
+                    onclick="scrollToSection('security')"
+                >
+
+                    Learn Security
+
+                </button>
+
+
+            </div>
+
+
+            <div class="hero-stats">
+
+
+                <div>
+
+                    <strong>WPA3</strong>
+
+                    <span>Modern Security</span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>AES</strong>
+
+                    <span>Encryption</span>
+
+                </div>
+
+
+                <div>
+
+                    <strong>802.11</strong>
+
+                    <span>Wireless Standard</span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- NETWORK VISUAL -->
+
+        <div class="network-visual">
+
+
+            <div class="wifi-circle circle-one"></div>
+
+            <div class="wifi-circle circle-two"></div>
+
+            <div class="wifi-circle circle-three"></div>
+
+
+            <div class="router">
+
+                <div class="router-icon">
+                    📡
+                </div>
+
+                <p>SECURE AP</p>
+
+            </div>
+
+
+            <div class="device device-one">
+                💻
+            </div>
+
+
+            <div class="device device-two">
+                📱
+            </div>
+
+
+            <div class="device device-three">
+                🖥️
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================
+         SECURITY OVERVIEW
+    ===================================== -->
+
+    <section class="section" id="security">
+
+
+        <div class="section-heading">
+
+
+            <span class="section-tag">
+                WIRELESS PROTECTION
+            </span>
+
+
+            <h2>
+                Understanding Wireless Security
+            </h2>
+
+
+            <p>
+
+                Wireless security protects data and devices
+                communicating over Wi-Fi networks.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="security-grid">
+
+
+            <div class="security-card">
+
+
+                <div class="card-icon">
+                    🔐
+                </div>
+
+
+                <h3>
+                    Authentication
+                </h3>
+
+
+                <p>
+
+                    Authentication verifies whether a device
+                    or user is allowed to connect to a
+                    wireless network.
+
+                </p>
+
+
+                <div class="card-label">
+                    IDENTITY VERIFICATION
+                </div>
+
+
+            </div>
+
+
+
+            <div class="security-card">
+
+
+                <div class="card-icon">
+                    🔒
+                </div>
+
+
+                <h3>
+                    Encryption
+                </h3>
+
+
+                <p>
+
+                    Encryption converts readable information
+                    into protected data that unauthorized
+                    users cannot easily understand.
+
+                </p>
+
+
+                <div class="card-label">
+                    DATA PROTECTION
+                </div>
+
+
+            </div>
+
+
+
+            <div class="security-card">
+
+
+                <div class="card-icon">
+                    🛡️
+                </div>
+
+
+                <h3>
+                    Access Control
+                </h3>
+
+
+                <p>
+
+                    Access control determines which users
+                    and devices are permitted to use
+                    network resources.
+
+                </p>
+
+
+                <div class="card-label">
+                    NETWORK CONTROL
+                </div>
+
+
+            </div>
+
+
+
+            <div class="security-card">
+
+
+                <div class="card-icon">
+                    👁️
+                </div>
+
+
+                <h3>
+                    Monitoring
+                </h3>
+
+
+                <p>
+
+                    Monitoring helps administrators identify
+                    unusual network behavior and security
+                    events.
+
+                </p>
+
+
+                <div class="card-label">
+                    THREAT DETECTION
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================
+         WPA COMPARISON
+    ===================================== -->
+
+    <section class="section dark-section">
+
+
+        <div class="section-heading">
+
+
+            <span class="section-tag">
+                SECURITY STANDARDS
+            </span>
+
+
+            <h2>
+                WPA Security Evolution
+            </h2>
+
+
+            <p>
+
+                Wireless security protocols have evolved
+                to provide stronger authentication and
+                encryption.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="protocol-table">
+
+
+            <div class="table-header">
+
+                <span>Protocol</span>
+
+                <span>Encryption</span>
+
+                <span>Security</span>
+
+                <span>Recommendation</span>
+
+            </div>
+
+
+
+            <div class="table-row">
+
+                <strong>WEP</strong>
+
+                <span>Legacy RC4</span>
+
+                <span class="danger">Weak</span>
+
+                <span class="danger">Avoid</span>
+
+            </div>
+
+
+
+            <div class="table-row">
+
+                <strong>WPA</strong>
+
+                <span>TKIP</span>
+
+                <span class="warning">Legacy</span>
+
+                <span class="warning">
+                    Avoid for new networks
+                </span>
+
+            </div>
+
+
+
+            <div class="table-row">
+
+                <strong>WPA2</strong>
+
+                <span>AES / CCMP</span>
+
+                <span class="good">Strong</span>
+
+                <span class="good">
+                    Widely supported
+                </span>
+
+            </div>
+
+
+
+            <div class="table-row highlight-row">
+
+                <strong>WPA3</strong>
+
+                <span>Modern encryption</span>
+
+                <span class="excellent">
+                    Enhanced
+                </span>
+
+                <span class="excellent">
+                    Preferred when supported
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================
+         THREATS SECTION
+    ===================================== -->
+
+    <section class="section" id="threats">
+
+
+        <div class="section-heading">
+
+
+            <span class="section-tag">
+                THREAT AWARENESS
+            </span>
+
+
+            <h2>
+                Common Wireless Security Risks
+            </h2>
+
+
+            <p>
+
+                Understanding common attack techniques
+                helps users protect wireless networks.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="threat-grid">
+
+
+            <div class="threat-card">
+
+
+                <div class="threat-number">
+                    01
+                </div>
+
+
+                <h3>
+                    Rogue Access Point
+                </h3>
+
+
+                <p>
+
+                    An unauthorized wireless access point
+                    can create security and privacy risks.
+
+                </p>
+
+
+                <div class="threat-level medium">
+                    RISK: MEDIUM
+                </div>
+
+
+            </div>
+
+
+
+            <div class="threat-card">
+
+
+                <div class="threat-number">
+                    02
+                </div>
+
+
+                <h3>
+                    Evil Twin
+                </h3>
+
+
+                <p>
+
+                    A fraudulent Wi-Fi network may imitate
+                    the name of a legitimate network.
+
+                </p>
+
+
+                <div class="threat-level high">
+                    RISK: HIGH
+                </div>
+
+
+            </div>
+
+
+
+            <div class="threat-card">
+
+
+                <div class="threat-number">
+                    03
+                </div>
+
+
+                <h3>
+                    Weak Password
+                </h3>
+
+
+                <p>
+
+                    Short or predictable passwords can
+                    reduce wireless network security.
+
+                </p>
+
+
+                <div class="threat-level high">
+                    RISK: HIGH
+                </div>
+
+
+            </div>
+
+
+
+            <div class="threat-card">
+
+
+                <div class="threat-number">
+                    04
+                </div>
+
+
+                <h3>
+                    Unsecured Network
+                </h3>
+
+
+                <p>
+
+                    Networks without appropriate protection
+                    may expose users to unnecessary
+                    privacy risks.
+
+                </p>
+
+
+                <div class="threat-level critical">
+                    RISK: CRITICAL
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================
+         SECURITY LAB
+    ===================================== -->
+
+    <section class="section lab-section" id="lab">
+
+
+        <div class="section-heading">
+
+
+            <span class="section-tag">
+                INTERACTIVE LAB
+            </span>
+
+
+            <h2>
+                Wireless Security Simulator
+            </h2>
+
+
+            <p>
+
+                These simulations are educational and
+                operate entirely inside this webpage.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="lab-container">
+
+
+
+            <!-- PASSWORD ANALYZER -->
+
+            <div class="lab-card">
+
+
+                <div class="lab-card-header">
+
+
+                    <div>
+
+                        <span class="lab-icon">
+                            🔑
+                        </span>
+
+
+                        <h3>
+                            Password Strength Analyzer
+                        </h3>
+
+                    </div>
+
+
+                    <span class="simulation">
+                        SIMULATION
+                    </span>
+
+
+                </div>
+
+
+                <p class="lab-description">
+
+                    Enter a sample password to see how
+                    different password characteristics
+                    affect its security score.
+
+                </p>
+
+
+
+                <div class="password-input">
+
+
+                    <input
+                        type="password"
+                        id="passwordInput"
+                        placeholder="Enter a sample password"
+                        oninput="checkPassword()"
+                    >
+
+
+                    <button
+                        onclick="togglePassword()"
+                        aria-label="Show password"
+                    >
+
+                        👁
+
+                    </button>
+
+
+                </div>
+
+
+
+                <div class="strength-bar">
+
+                    <div id="strengthProgress"></div>
+
+                </div>
+
+
+
+                <div class="strength-info">
+
+                    <span>
+                        Strength:
+                    </span>
+
+
+                    <strong id="strengthText">
+                        Not tested
+                    </strong>
+
+                </div>
+
+
+
+                <div class="password-rules">
+
+
+                    <div id="lengthRule">
+                        ○ At least 12 characters
+                    </div>
+
+
+                    <div id="upperRule">
+                        ○ Uppercase letter
+                    </div>
+
+
+                    <div id="lowerRule">
+                        ○ Lowercase letter
+                    </div>
+
+
+                    <div id="numberRule">
+                        ○ Number
+                    </div>
+
+
+                    <div id="symbolRule">
+                        ○ Special character
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- AUTHENTICATION DEMO -->
+
+            <div class="lab-card">
+
+
+                <div class="lab-card-header">
+
+
+                    <div>
+
+                        <span class="lab-icon">
+                            🔐
+                        </span>
+
+
+                        <h3>
+                            Authentication Demo
+                        </h3>
+
+                    </div>
+
+
+                    <span class="simulation">
+                        SIMULATION
+                    </span>
+
+
+                </div>
+
+
+
+                <p class="lab-description">
+
+                    Simulate a basic authentication process
+                    between a device and an access point.
+
+                </p>
+
+
+
+                <div class="auth-system">
+
+
+                    <div class="auth-device">
+
+                        💻
+
+                        <span>
+                            CLIENT
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="auth-line">
+
+                        <span id="authMessage">
+                            Ready
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="auth-device">
+
+                        📡
+
+                        <span>
+                            ACCESS POINT
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <button
+                    class="primary-btn full-btn"
+                    onclick="startAuthentication()"
+                >
+
+                    Start Authentication
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- ENCRYPTION DEMO -->
+
+            <div class="lab-card">
+
+
+                <div class="lab-card-header">
+
+
+                    <div>
+
+                        <span class="lab-icon">
+                            🔒
+                        </span>
+
+
+                        <h3>
+                            Encryption Demonstration
+                        </h3>
+
+                    </div>
+
+
+                    <span class="simulation">
+                        SIMULATION
+                    </span>
+
+
+                </div>
+
+
+
+                <p class="lab-description">
+
+                    Observe how readable data can be
+                    represented as protected ciphertext
+                    in a simplified educational model.
+
+                </p>
+
+
+
+                <div class="encryption-box">
+
+
+                    <label>
+                        Plaintext
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="plainText"
+                        placeholder="Type a message"
+                    >
+
+
+
+                    <button
+                        class="primary-btn full-btn"
+                        onclick="encryptMessage()"
+                    >
+
+                        Encrypt
+
+                    </button>
+
+
+
+                    <label>
+                        Simulated Ciphertext
+                    </label>
+
+
+
+                    <div
+                        class="cipher-output"
+                        id="cipherOutput"
+                    >
+
+                        Waiting for input...
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- NETWORK SCANNER -->
+
+            <div class="lab-card">
+
+
+                <div class="lab-card-header">
+
+
+                    <div>
+
+                        <span class="lab-icon">
+                            📡
+                        </span>
+
+
+                        <h3>
+                            Network Security Scanner
+                        </h3>
+
+                    </div>
+
+
+                    <span class="simulation">
+                        SIMULATION
+                    </span>
+
+
+                </div>
+
+
+
+                <p class="lab-description">
+
+                    This fictional scanner demonstrates
+                    how a security audit might display
+                    network configuration information.
+
+                </p>
+
+
+
+                <button
+                    class="primary-btn full-btn"
+                    onclick="runNetworkScan()"
+                >
+
+                    Run Simulated Scan
+
+                </button>
+
+
+
+                <div
+                    class="scan-results"
+                    id="scanResults"
+                >
+
+                    <div class="scan-placeholder">
+
+                        Click scan to begin
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================
+         SECURITY SCORE
+    ===================================== -->
+
+    <section class="section score-section">
+
+
+        <div class="score-content">
+
+
+            <div>
+
+
+                <span class="section-tag">
+                    SECURITY CHECK
+                </span>
+
+
+                <h2>
+                    Evaluate Your Wireless Security
+                </h2>
+
+
+                <p style="color: var(--muted); margin-top: 12px;">
+
+                    Answer the questions below and receive
+                    an educational security score.
+
+                </p>
+
+
+            </div>
+
+
+
+            <div class="score-panel">
+
+
+                <div class="score-circle">
+
+
+                    <span id="score">
+                        0
+                    </span>
+
+
+                    <small>
+                        / 100
+                    </small>
+
+
+                </div>
+
+
+
+                <div class="score-controls">
+
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            class="securityCheck"
+                            value="20"
+                        >
+
+                        WPA2 or WPA3 enabled
+
+                    </label>
+
+
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            class="securityCheck"
+                            value="20"
+                        >
+
+                        Strong Wi-Fi password
+
+                    </label>
+
+
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            class="securityCheck"
+                            value="20"
+                        >
+
+                        Router firmware updated
+
+                    </label>
+
+
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            class="securityCheck"
+                            value="20"
+                        >
+
+                        WPS reviewed or disabled if unnecessary
+
+                    </label>
+
+
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            class="securityCheck"
+                            value="20"
+                        >
+
+                        Guest network used for untrusted devices
+
+                    </label>
+
+
+
+                    <button
+                        class="primary-btn"
+                        onclick="calculateScore()"
+                    >
+
+                        Calculate Score
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================
+         CHECKLIST
+    ===================================== -->
+
+    <section class="section" id="checklist">
+
+
+        <div class="section-heading">
+
+
+            <span class="section-tag">
+                PROTECTION GUIDE
+            </span>
+
+
+            <h2>
+                Wireless Security Checklist
+            </h2>
+
+
+        </div>
+
+
+
+        <div class="checklist">
+
+
+            <div class="check-item">
+
+
+                <span class="check-icon">
+                    ✓
+                </span>
+
+
+                <div>
+
+                    <h3>
+                        Use WPA2 or WPA3
+                    </h3>
+
+
+                    <p>
+                        Prefer modern wireless security standards.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="check-item">
+
+
+                <span class="check-icon">
+                    ✓
+                </span>
+
+
+                <div>
+
+                    <h3>
+                        Create a Strong Password
+                    </h3>
+
+
+                    <p>
+                        Use a long and unique wireless password.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="check-item">
+
+
+                <span class="check-icon">
+                    ✓
+                </span>
+
+
+                <div>
+
+                    <h3>
+                        Update Router Firmware
+                    </h3>
+
+
+                    <p>
+                        Keep router software updated according
+                        to the manufacturer's guidance.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="check-item">
+
+
+                <span class="check-icon">
+                    ✓
+                </span>
+
+
+                <div>
+
+                    <h3>
+                        Use Guest Wi-Fi
+                    </h3>
+
+
+                    <p>
+                        Separate guest or untrusted devices
+                        when appropriate.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="check-item">
+
+
+                <span class="check-icon">
+                    ✓
+                </span>
+
+
+                <div>
+
+                    <h3>
+                        Review Connected Devices
+                    </h3>
+
+
+                    <p>
+                        Periodically check devices connected
+                        to your own network.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="check-item">
+
+
+                <span class="check-icon">
+                    ✓
+                </span>
+
+
+                <div>
+
+                    <h3>
+                        Avoid Suspicious Wi-Fi
+                    </h3>
+
+
+                    <p>
+                        Verify the network name and legitimacy
+                        before connecting.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =====================================
+         FOOTER
+    ===================================== -->
+
+    <footer>
+
+
+        <div class="footer-content">
+
+
+            <div class="logo">
+
+                🛡️ Wireless<span class="green">Secure</span>
+
+            </div>
+
+
+            <p>
+                Educational Wireless Security Demonstration
+            </p>
+
+
+            <p class="copyright">
+
+                © 2026 WirelessSecure |
+                Cybersecurity Education Project
+
+            </p>
+
+
+        </div>
+
+
+    </footer>
+
+
+
+    <!-- =====================================
+         JAVASCRIPT
+    ===================================== -->
+
+    <script>
+
+
+        /* ==================================
+           NAVIGATION
+        ================================== */
+
+        function scrollToSection(id) {
+
+            const element = document.getElementById(id);
+
+            if (element) {
+
+                element.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+        }
+
+
+        function scrollToLab() {
+
+            scrollToSection("lab");
+
+        }
+
+
+
+        /* ==================================
+           PASSWORD VISIBILITY
+        ================================== */
+
+        function togglePassword() {
+
+            const input =
+                document.getElementById("passwordInput");
+
+            if (input.type === "password") {
+
+                input.type = "text";
+
+            } else {
+
+                input.type = "password";
+
+            }
+
+        }
+
+
+
+        /* ==================================
+           PASSWORD STRENGTH ANALYZER
+        ================================== */
+
+        function checkPassword() {
+
+
+            const password =
+                document.getElementById("passwordInput").value;
+
+
+            const progress =
+                document.getElementById("strengthProgress");
+
+
+            const strengthText =
+                document.getElementById("strengthText");
+
+
+            const lengthRule =
+                document.getElementById("lengthRule");
+
+
+            const upperRule =
+                document.getElementById("upperRule");
+
+
+            const lowerRule =
+                document.getElementById("lowerRule");
+
+
+            const numberRule =
+                document.getElementById("numberRule");
+
+
+            const symbolRule =
+                document.getElementById("symbolRule");
+
+
+            let score = 0;
+
+
+
+            /* Length */
+
+            if (password.length >= 12) {
+
+                score += 20;
+
+                lengthRule.innerHTML =
+                    "✓ At least 12 characters";
+
+            } else {
+
+                lengthRule.innerHTML =
+                    "○ At least 12 characters";
+
+            }
+
+
+
+            /* Uppercase */
+
+            if (/[A-Z]/.test(password)) {
+
+                score += 20;
+
+                upperRule.innerHTML =
+                    "✓ Uppercase letter";
+
+            } else {
+
+                upperRule.innerHTML =
+                    "○ Uppercase letter";
+
+            }
+
+
+
+            /* Lowercase */
+
+            if (/[a-z]/.test(password)) {
+
+                score += 20;
+
+                lowerRule.innerHTML =
+                    "✓ Lowercase letter";
+
+            } else {
+
+                lowerRule.innerHTML =
+                    "○ Lowercase letter";
+
+            }
+
+
+
+            /* Number */
+
+            if (/[0-9]/.test(password)) {
+
+                score += 20;
+
+                numberRule.innerHTML =
+                    "✓ Number";
+
+            } else {
+
+                numberRule.innerHTML =
+                    "○ Number";
+
+            }
+
+
+
+            /* Symbol */
+
+            if (/[^A-Za-z0-9]/.test(password)) {
+
+                score += 20;
+
+                symbolRule.innerHTML =
+                    "✓ Special character";
+
+            } else {
+
+                symbolRule.innerHTML =
+                    "○ Special character";
+
+            }
+
+
+
+            progress.style.width =
+                score + "%";
+
+
+
+            if (password.length === 0) {
+
+                strengthText.innerText =
+                    "Not tested";
+
+                progress.style.width =
+                    "0%";
+
+                progress.style.background =
+                    "#00ff9d";
+
+            }
+
+            else if (score <= 40) {
+
+                strengthText.innerText =
+                    "Weak";
+
+                progress.style.background =
+                    "#ff4d67";
+
+            }
+
+            else if (score <= 60) {
+
+                strengthText.innerText =
+                    "Moderate";
+
+                progress.style.background =
+                    "#ffb020";
+
+            }
+
+            else if (score <= 80) {
+
+                strengthText.innerText =
+                    "Strong";
+
+                progress.style.background =
+                    "#2de38a";
+
+            }
+
+            else {
+
+                strengthText.innerText =
+                    "Very Strong";
+
+                progress.style.background =
+                    "#00ff9d";
+
+            }
+
+        }
+
+
+
+        /* ==================================
+           AUTHENTICATION DEMO
+        ================================== */
+
+        function startAuthentication() {
+
+
+            const message =
+                document.getElementById("authMessage");
+
+
+            message.innerText =
+                "Requesting...";
+
+
+            setTimeout(function () {
+
+                message.innerText =
+                    "Verifying...";
+
+            }, 1000);
+
+
+            setTimeout(function () {
+
+                message.innerText =
+                    "Credentials checked";
+
+            }, 2000);
+
+
+            setTimeout(function () {
+
+                message.innerText =
+                    "✓ Access granted";
+
+            }, 3000);
+
+        }
+
+
+
+        /* ==================================
+           SIMULATED ENCRYPTION
+        ================================== */
+
+        function encryptMessage() {
+
+
+            const input =
+                document.getElementById("plainText");
+
+
+            const output =
+                document.getElementById("cipherOutput");
+
+
+            const text =
+                input.value;
+
+
+            if (text.trim() === "") {
+
+                output.innerText =
+                    "Please enter a message first.";
+
+                return;
+
+            }
+
+
+
+            /*
+                EDUCATIONAL SIMULATION ONLY.
+
+                This is NOT real encryption.
+                It converts characters into
+                hexadecimal-looking values.
+            */
+
+
+            let result = "";
+
+
+            for (let i = 0; i < text.length; i++) {
+
+                let code =
+                    text.charCodeAt(i);
+
+
+                result +=
+                    code.toString(16).padStart(2, "0");
+
+
+                result += " ";
+
+            }
+
+
+            output.innerText =
+                result.trim();
+
+        }
+
+
+
+        /* ==================================
+           SIMULATED NETWORK SCANNER
+        ================================== */
+
+        function runNetworkScan() {
+
+
+            const results =
+                document.getElementById("scanResults");
+
+
+            results.innerHTML = `
+
+                <div class="scan-row">
+
+                    <span>
+                        Scanning environment
+                    </span>
+
+                    <span>
+                        ...
+                    </span>
+
+                </div>
+
+            `;
+
+
+
+            setTimeout(function () {
+
+
+                results.innerHTML = `
+
+                    <div class="scan-row">
+
+                        <span>
+                            Network Mode
+                        </span>
+
+                        <strong>
+                            Protected
+                        </strong>
+
+                    </div>
+
+
+                    <div class="scan-row">
+
+                        <span>
+                            Security Protocol
+                        </span>
+
+                        <strong>
+                            WPA3
+                        </strong>
+
+                    </div>
+
+
+                    <div class="scan-row">
+
+                        <span>
+                            Encryption
+                        </span>
+
+                        <strong>
+                            Enabled
+                        </strong>
+
+                    </div>
+
+
+                    <div class="scan-row">
+
+                        <span>
+                            Guest Network
+                        </span>
+
+                        <strong>
+                            Recommended
+                        </strong>
+
+                    </div>
+
+
+                    <div class="scan-row">
+
+                        <span>
+                            Security Status
+                        </span>
+
+                        <strong style="color:#00ff9d">
+
+                            LOW RISK
+
+                        </strong>
+
+                    </div>
+
+                `;
+
+
+            }, 1800);
+
+        }
+
+
+
+        /* ==================================
+           SECURITY SCORE
+        ================================== */
+
+        function calculateScore() {
+
+
+            const checks =
+                document.querySelectorAll(
+                    ".securityCheck"
+                );
+
+
+            let score = 0;
+
+
+            checks.forEach(function (check) {
+
+                if (check.checked) {
+
+                    score +=
+                        Number(check.value);
+
+                }
+
+            });
+
+
+            const scoreElement =
+                document.getElementById("score");
+
+
+            scoreElement.innerText =
+                score;
+
+
+            if (score < 40) {
+
+                scoreElement.style.color =
+                    "#ff4d67";
+
+            }
+
+            else if (score < 80) {
+
+                scoreElement.style.color =
+                    "#ffb020";
+
+            }
+
+            else {
+
+                scoreElement.style.color =
+                    "#00ff9d";
+
+            }
+
+        }
+
+
+
+        /* ==================================
+           CARD SCROLL ANIMATION
+        ================================== */
+
+        const cards =
+            document.querySelectorAll(
+                ".security-card, .threat-card, .lab-card"
+            );
+
+
+        if ("IntersectionObserver" in window) {
+
+
+            const observer =
+                new IntersectionObserver(
+
+                    function (entries) {
+
+                        entries.forEach(function (entry) {
+
+                            if (entry.isIntersecting) {
+
+                                entry.target.style.opacity =
+                                    "1";
+
+
+                                entry.target.style.transform =
+                                    "translateY(0)";
+
+                            }
+
+                        });
+
+                    },
+
+                    {
+                        threshold: 0.15
+                    }
+
+                );
+
+
+            cards.forEach(function (card) {
+
+                card.style.opacity = "0";
+
+                card.style.transform =
+                    "translateY(30px)";
+
+                card.style.transition =
+                    "all .6s ease";
+
+                observer.observe(card);
+
+            });
+
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
